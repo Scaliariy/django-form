@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .forms import ApplicationForm
-from .models import Form
+from .forms import ApplicationForm, ContactForm
+from .models import Form, ContactForm as CForm
 from django.contrib import messages
 from django.core.mail import EmailMessage
 
@@ -26,5 +26,27 @@ def index(request):
 
             messages.success(request, "Form submitted successfully")
     return render(request, "index.html")
+
+
 def about(request):
     return render(request, "about.html")
+
+
+def contact(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            email = form.cleaned_data["email"]
+            subject = form.cleaned_data["subject"]
+            message = form.cleaned_data["message"]
+
+            CForm.objects.create(name=name, email=email, subject=subject,
+                                       message=message)
+
+            message_body = f"Thank you for your submission, {name}, about: {subject}."
+            email_message = EmailMessage("Form submission confirmation", message_body, to=[email])
+            email_message.send()
+
+            messages.success(request, "Form submitted successfully")
+    return render(request, "contact.html")

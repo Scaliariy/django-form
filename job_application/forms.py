@@ -7,3 +7,10 @@ class ApplicationForm(forms.Form):
     email = forms.EmailField()
     date = forms.DateField()
     occupation = forms.CharField(max_length=80)
+
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=80)
+    email = forms.EmailField()
+    subject = forms.CharField(max_length=80)
+    message = forms.CharField(max_length=1000)
